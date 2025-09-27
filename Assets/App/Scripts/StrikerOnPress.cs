@@ -10,8 +10,8 @@ public class StrikerOnPress : MonoBehaviour
     [SerializeField] private TriggerCounter p1triggerCounter;
     [SerializeField] private TriggerCounter p2triggerCounter;
 
-    [SerializeField] private GameObject p1SelectedStriker = null;
-    [SerializeField] private GameObject p2SelectedStriker = null;
+     public GameObject p1SelectedStriker = null;
+     public GameObject p2SelectedStriker = null;
 
     private Camera cam;
 
@@ -20,6 +20,10 @@ public class StrikerOnPress : MonoBehaviour
 
     [SerializeField] private float minX = -3.55f;    // Minimum X position
     [SerializeField] private float maxX = 3.55f;
+
+    public bool IsP1StrikerSelected = false;
+    public bool IsP2StrikerSelected = false;
+
     void Start()
     {
         cam = Camera.main;
@@ -75,6 +79,7 @@ public class StrikerOnPress : MonoBehaviour
                     if (p1SelectedStriker == null)
                     {
                         p1SelectedStriker = clickedStrikerGO;
+                        IsP1StrikerSelected = true;
                         p1SelectedStriker.transform.position = p1triggerCounter.StrikerHolderTransform.position;
                         p1slider.value = 0.5f;
                     }
@@ -83,6 +88,7 @@ public class StrikerOnPress : MonoBehaviour
                     if (p2SelectedStriker == null)
                     {
                         p2SelectedStriker = clickedStrikerGO;
+                        IsP2StrikerSelected = true;
                         p2SelectedStriker.transform.position = p2triggerCounter.StrikerHolderTransform.position;
                         p2slider.value = 0.5f;
                     }
@@ -116,4 +122,18 @@ public class StrikerOnPress : MonoBehaviour
 
     }
 
+
+    public void ResetStrikers(GameObject resetGO)
+    {
+        if (p1SelectedStriker != null && p1SelectedStriker==resetGO)
+        {
+            p1SelectedStriker = null;
+            
+        }
+        if (p2SelectedStriker != null && p2SelectedStriker == resetGO)
+        {
+            p2SelectedStriker = null;
+            
+        }
+    }
 }

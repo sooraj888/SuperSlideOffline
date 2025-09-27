@@ -17,6 +17,7 @@ public class CarromStrikerMultiTouch : MonoBehaviour
 
     private Dictionary<int, FingerData> activeTouches = new Dictionary<int, FingerData>();
 
+    [SerializeField] private StrikerOnPress strikerOnPress;
     void Update()
     {
         Debug.Log(activeTouches.Count);
@@ -30,7 +31,7 @@ public class CarromStrikerMultiTouch : MonoBehaviour
                     if (Physics.Raycast(Camera.main.ScreenPointToRay(touch.position), out RaycastHit hit))
                     {
                         
-                        if (hit.collider.CompareTag(strikerTag))
+                        if (hit.collider.CompareTag(strikerTag) && ((strikerOnPress.p1SelectedStriker !=null && strikerOnPress.p1SelectedStriker == hit.collider.gameObject) || (strikerOnPress.p2SelectedStriker != null && strikerOnPress.p2SelectedStriker == hit.collider.gameObject)))
                         {
                             Rigidbody rb = hit.collider.attachedRigidbody;
                             Vector3 dragStart = GetWorldPoint(touch.position);
@@ -58,10 +59,36 @@ public class CarromStrikerMultiTouch : MonoBehaviour
                         Vector3 strikeDir = fd.dragStart - dragEnd; // pull back direction
                         strikeDir.y = 0f;
 
-                        float distance = strikeDir.magnitude * 10;
-                        Vector3 force = strikeDir.normalized * Mathf.Clamp(distance, 0f, maxForce);
+                        //float distance = strikeDir.magnitude * 10;
+
+                        float distance = strikeDir.magnitude;
+
+                        // Map distance to force
+                        float power = Mathf.Clamp(distance * maxForce, 0f, maxForce);
+
+
+                        //Vector3 force = strikeDir.normalized * Mathf.Clamp(distance, 0f, maxForce);
+
+                        Vector3 force = strikeDir.normalized * power;
+
+
+                        if (strikerOnPress.p1SelectedStriker != null && strikerOnPress.p1SelectedStriker == fd.rb.gameObject  && strikerOnPress.IsP1StrikerSelected == true)
+                        {
+                            strikerOnPress.IsP1StrikerSelected = false;
+                            activeTouches.Remove(touch.fingerId);
+                            return;
+                        }
+                        if (strikerOnPress.p2SelectedStriker != null && strikerOnPress.p2SelectedStriker == fd.rb.gameObject && strikerOnPress.IsP2StrikerSelected == true)
+                        {
+                            strikerOnPress.IsP2StrikerSelected = false;
+                            activeTouches.Remove(touch.fingerId);
+                            return;
+                        }
 
                         fd.rb.AddForce(force, ForceMode.Impulse);
+
+                        strikerOnPress.ResetStrikers(resetGO: fd.rb.gameObject);
+
 
                         activeTouches.Remove(touch.fingerId); // remove after shooting
                     }
