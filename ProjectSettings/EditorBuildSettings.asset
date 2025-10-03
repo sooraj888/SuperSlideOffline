@@ -6,6 +6,12 @@ EditorBuildSettings:
   serializedVersion: 2
   m_Scenes:
   - enabled: 1
+    path: Assets/App2/Scene/DistributedMultiplayer.unity
+    guid: 734cff2e784d45f4099daf7035fab562
+  - enabled: 1
+    path: Assets/App/Scenes/OnlineMultiplayer.unity
+    guid: 647156d2a95247a49936545d65f85e8b
+  - enabled: 1
     path: Assets/App2/Scene/SuperSlide.unity
     guid: 7ba8b22cd79ae3c4190cc9b5b71c5b45
   - enabled: 1

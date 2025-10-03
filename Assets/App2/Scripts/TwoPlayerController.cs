@@ -14,11 +14,15 @@ public class TwoPlayerController : MonoBehaviour
 
     [Header("Settings")]
     public float maxForce = 15f;
+
+    [SerializeField] Vector2 minMaxBound;
+
+    [SerializeField] bool isTopPlayer = false;
     private class FingerData
     {
         public GameObject HighLiter;
         public Rigidbody rb;
-        public Vector3 offset;
+        //public Vector3 offset;
 
         public bool isPositionLocked = false;
         public float lockXPos = 0f;
@@ -50,13 +54,13 @@ public class TwoPlayerController : MonoBehaviour
                         Vector3 clickOffset = rb.position - hit.point;
 
                         // Add offset if needed
-                        targetPos += new Vector3(clickOffset.x, 0f, clickOffset.z);
+                        //targetPos += new Vector3(clickOffset.x, 0f, clickOffset.z);
 
 
                         //  Clamp using BoxCollider bounds
                         Bounds bounds = boardCollider.bounds;
 
-                        if (targetPos.z > 0)
+                        if (isTopPlayer? targetPos.z < minMaxBound.y : targetPos.z > minMaxBound.y)
                         {
                             Debug.Log("zpos" + targetPos.z + "bonds min" + bounds.min.z + "bound max" + bounds.max.z);
                             return;
@@ -68,7 +72,7 @@ public class TwoPlayerController : MonoBehaviour
                             {
                                 HighLiter = Instantiate(prefab, hit.collider.transform),
                                 rb = rb,
-                                offset = clickOffset,
+                                //offset = clickOffset,
                                 lockXPos = rb.position.x
                             };
                         }
@@ -85,7 +89,7 @@ public class TwoPlayerController : MonoBehaviour
                         Vector3 targetPos = new Vector3(worldPos.x, fd.rb.position.y, worldPos.z);
 
                         // Add offset if needed
-                        targetPos += new Vector3(fd.offset.x, 0f, fd.offset.z);
+                        //targetPos += new Vector3(fd.offset.x, 0f, fd.offset.z);
 
 
                         //  Clamp using BoxCollider bounds
@@ -99,7 +103,7 @@ public class TwoPlayerController : MonoBehaviour
 
                         
 
-                        if (targetPos.z < -7)
+                        if (isTopPlayer ? targetPos.z > minMaxBound.x : targetPos.z < minMaxBound.x)
                         {
                             targetPos.x = fd.lockXPos;
                             fd.isPositionLocked = true;
